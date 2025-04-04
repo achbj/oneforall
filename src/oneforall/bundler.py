@@ -67,8 +67,16 @@ def pack(source_dir: Path, output_file: Path, ignore_file: Optional[Path] = None
         else:
             logger.warning(f"Custom ignore file '{ignore_file}' not found.")
 
-    # Filter out empty lines and comments
-    filtered_patterns = [p for p in ignore_patterns if p.strip() and not p.strip().startswith('#')]
+    # Filter out empty lines and comments, and strip trailing comments/whitespace
+    filtered_patterns = []
+    for p in ignore_patterns:
+        line = p.strip()
+        if line and not line.startswith('#'):
+            # Strip trailing comments after whitespace
+            pattern_part = line.split('#', 1)[0].strip()
+            if pattern_part:
+                filtered_patterns.append(pattern_part)
+
     spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, filtered_patterns)
 
     # --- File Iteration and Bundling ---

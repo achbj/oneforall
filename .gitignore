@@ -16,6 +16,7 @@ pip-delete-this-directory.txt
 dist/
 build/
 wheels/
+~/
 
 # PyBundler output
 *.pybundle
@@ -30,6 +31,7 @@ wheels/
 .DS_Store
 Thumbs.db
 # should_be_ignored.txt # Reverted test change
+src/oneforall/ignore_this_oneforall.txt # Testing simpler pattern
 
 # Testing
 .pytest_cache/
