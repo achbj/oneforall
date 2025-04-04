@@ -1,5 +1,5 @@
-# src/pybundler/cli.py
-"""Command-line interface for PyBundler."""
+# src/oneforall/cli.py
+"""Command-line interface for OneForAll."""
 
 import argparse
 from pathlib import Path
@@ -10,21 +10,21 @@ from .defaults import DEFAULT_BUNDLE_FILENAME
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description=f"PyBundler v{__version__}: Pack or unpack Python projects.",
+        description=f"OneForAll v{__version__}: Pack or unpack project files.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Bundle current directory into 'project.pybundle', using .gitignore
-  pybundler bundle .
+  # Bundle current directory into 'project.oneforall', using .gitignore
+  oneforall bundle .
 
-  # Bundle 'my_project/' into 'my_app.bundle'
-  pybundler bundle my_project/ -o my_app.bundle
+  # Bundle 'my_project/' into 'my_app.ofa' (example custom extension)
+  oneforall bundle my_project/ -o my_app.ofa
 
   # Bundle current directory, using a custom ignore file
-  pybundler bundle . --ignore .customignore
+  oneforall bundle . --ignore .customignore
 
-  # Unpack 'my_app.bundle' into 'output_project/' directory
-  pybundler unbundle my_app.bundle -o output_project/
+  # Unpack 'my_app.ofa' into 'output_project/' directory
+  oneforall unbundle my_app.ofa -o output_project/
 """
     )
     parser.add_argument(
@@ -77,7 +77,8 @@ Examples:
                 source_name = args.source_dir.resolve().name
                 if source_name == '.': # Handle bundling current directory
                    source_name = Path.cwd().name
-                output_file = Path(f"{source_name}.pybundle")
+                # Use the default filename from defaults module
+                output_file = Path(f"{source_name}.{DEFAULT_BUNDLE_FILENAME.split('.')[-1]}")
                 print(f"Output file not specified, defaulting to: '{output_file}'")
 
             pack(args.source_dir.resolve(), output_file.resolve(), args.ignore.resolve() if args.ignore else None)

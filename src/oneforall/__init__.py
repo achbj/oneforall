@@ -1,6 +1,6 @@
-# src/pybundler/__init__.py
+# src/oneforall/__init__.py
 """
-PyBundler: A tool to pack and unpack Python projects into a single file
+OneForAll: A tool to pack and unpack project files into a single file
 for easy sharing and LLM interaction.
 """
 __version__ = "0.1.0" # Initial version

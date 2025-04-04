@@ -1,6 +1,6 @@
-# PyBundler
+# OneForAll
 
-[![PyPI version](https://badge.fury.io/py/pybundler.svg)](https://badge.fury.io/py/pybundler) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) Pack and unpack Python project source code into a single, structured text file. Ideal for sharing, archiving snapshots, and interacting with Large Language Models (LLMs) like Gemini, Claude, or GPT.
+[![PyPI version](https://badge.fury.io/py/oneforall.svg)](https://badge.fury.io/py/oneforall) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) Pack and unpack project source code into a single, structured text file. Ideal for sharing, archiving snapshots, and interacting with Large Language Models (LLMs) like Gemini, Claude, or GPT.
 
 ## The Problem
 
@@ -8,14 +8,14 @@ Sharing multi-file codebases or providing them as context to LLMs can be cumbers
 
 ## The Solution
 
-`pybundler` traverses your project directory, reads the text-based source files, and concatenates them into one `.pybundle` file. Each file's content is clearly marked with its original path. It intelligently ignores files based on default patterns (like `.git`, `__pycache__`, `.venv`) and your project's `.gitignore` file (or a custom ignore file).
+`oneforall` traverses your project directory, reads the text-based source files, and concatenates them into one `.oneforall` file. Each file's content is clearly marked with its original path. It intelligently ignores files based on default patterns (like `.git`, `__pycache__`, `.venv`) and your project's `.gitignore` file (or a custom ignore file).
 
-You can then easily share this single file or paste its content into an LLM prompt. `pybundler` can also unpack this bundle file back into the original directory structure.
+You can then easily share this single file or paste its content into an LLM prompt. `oneforall` can also unpack this bundle file back into the original directory structure.
 
 **Key Features:**
 
-- Packs relevant project files into a single text file (`.pybundle`).
-- Unpacks a `.pybundle` file back into a directory structure.
+- Packs relevant project files into a single text file (`.oneforall`).
+- Unpacks a `.oneforall` file back into a directory structure.
 - Uses `.gitignore` syntax for excluding files (reads `.gitignore` by default, supports custom ignore files).
 - Includes sensible default ignores for common temporary files, caches, and VCS directories.
 - Provides clear markers showing the original path of each file within the bundle.
@@ -26,21 +26,21 @@ You can then easily share this single file or paste its content into an LLM prom
 ## Installation
 
 ```bash
-pip install pybundler
+pip install oneforall
 ```
 
 ## Usage
 
-`pybundler` provides two main commands: `bundle` and `unbundle`.
+`oneforall` provides two main commands: `bundle` and `unbundle`.
 
 ### Bundling a Project (`bundle`)
 
-This command packs a project directory into a single `.pybundle` file.
+This command packs a project directory into a single `.oneforall` file.
 
 **Basic Syntax:**
 
 ```bash
-pybundler bundle <source_directory> [options]
+oneforall bundle <source_directory> [options]
 ```
 
 **Arguments:**
@@ -49,9 +49,9 @@ pybundler bundle <source_directory> [options]
 
 **Options:**
 
-- `-o OUTPUT`, `--output OUTPUT`: Specifies the path for the output `.pybundle` file.
-  - If omitted, the default is `<source_directory_name>.pybundle` in the current working directory (e.g., bundling `my_project/` creates `my_project.pybundle`).
-  - If `<source_directory>` is `.`, the default output is `<current_directory_name>.pybundle`.
+- `-o OUTPUT`, `--output OUTPUT`: Specifies the path for the output `.oneforall` file.
+  - If omitted, the default is `<source_directory_name>.oneforall` in the current working directory (e.g., bundling `my_project/` creates `my_project.oneforall`).
+  - If `<source_directory>` is `.`, the default output is `<current_directory_name>.oneforall`.
 - `-i IGNORE`, `--ignore IGNORE`: Path to a custom `.gitignore`-style file. Patterns in this file are added to the patterns found in the standard `.gitignore` within the `source_directory` (if one exists).
 - `-h`, `--help`: Show the help message for the `bundle` command.
 
@@ -60,34 +60,34 @@ pybundler bundle <source_directory> [options]
 1.  **Bundle the current directory into the default output file:**
 
     ```bash
-    pybundler bundle .
-    # Creates 'pybundler.pybundle' (if run in the project root)
+    oneforall bundle .
+    # Creates 'oneforall.oneforall' (if run in the project root)
     ```
 
 2.  **Bundle a specific project directory into a named output file:**
 
     ```bash
-    pybundler bundle ./my_cool_project -o cool_project_bundle.pybundle
+    oneforall bundle ./my_cool_project -o cool_project_bundle.ofa
     ```
 
 3.  **Bundle the current directory using an additional custom ignore file:**
     ```bash
-    pybundler bundle . --ignore ./.custom_ignores
+    oneforall bundle . --ignore ./.custom_ignores
     ```
 
 ### Unbundling a Project (`unbundle`)
 
-This command extracts the contents of a `.pybundle` file back into a directory structure.
+This command extracts the contents of a `.oneforall` file back into a directory structure.
 
 **Basic Syntax:**
 
 ```bash
-pybundler unbundle <bundle_file> -o <output_directory> [options]
+oneforall unbundle <bundle_file> -o <output_directory> [options]
 ```
 
 **Arguments:**
 
-- `<bundle_file>`: (Required) The path to the `.pybundle` file you want to unpack.
+- `<bundle_file>`: (Required) The path to the `.oneforall` file you want to unpack.
 
 **Options:**
 
@@ -99,26 +99,26 @@ pybundler unbundle <bundle_file> -o <output_directory> [options]
 1.  **Unpack a bundle into a new directory:**
 
     ```bash
-    pybundler unbundle cool_project_bundle.pybundle -o ./unpacked_project
+    oneforall unbundle cool_project_bundle.ofa -o ./unpacked_project
     # Creates ./unpacked_project/ and extracts the contents there
     ```
 
 2.  **Unpack a bundle into an existing directory (will overwrite existing files with the same name):**
     ```bash
-    pybundler unbundle project.pybundle -o ./existing_output_dir
+    oneforall unbundle project.oneforall -o ./existing_output_dir
     ```
 
 ## Programmatic Usage
 
-You can also use `pybundler` directly within your Python code:
+You can also use `oneforall` directly within your Python code:
 
 ```python
-from pybundler import pack, unpack
+from oneforall import pack, unpack
 from pathlib import Path
 
 # Define paths
 source_dir = Path("./my_project")
-bundle_file = Path("my_project.pybundle")
+bundle_file = Path("my_project.oneforall")
 output_dir = Path("./unpacked_project")
 
 try:

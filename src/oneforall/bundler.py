@@ -1,4 +1,4 @@
-# src/pybundler/bundler.py
+# src/oneforall/bundler.py
 """Core logic for packing a project into a single bundle file."""
 
 import logging
