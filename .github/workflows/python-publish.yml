@@ -1,0 +1,89 @@
+# .github/workflows/python-publish.yml
+
+name: Python Package CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types:
+      - created # Trigger when a new GitHub Release is created
+
+jobs:
+  build_and_test:
+    name: Build & Test Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build pytest .
+          # Consider adding linting tools like ruff or flake8 here
+          # pip install ruff
+
+      # Optional: Add linting step here if desired
+      # - name: Lint with Ruff
+      #   run: |
+      #     ruff check .
+      #     ruff format --check .
+
+      - name: Test with pytest
+        # This step will fail until you add tests in a tests/ directory
+        run: pytest
+
+      - name: Build package
+        run: python -m build
+
+      - name: Store distributions
+        # Store the built packages as an artifact to be used by the publish job
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-to-pypi:
+    name: Publish to PyPI
+    # Run only when a release is created and the build_and_test job succeeded
+    needs: build_and_test
+    if: github.event_name == 'release' && github.event.action == 'created'
+    runs-on: ubuntu-latest
+
+    # Grant permissions for OIDC token generation
+    permissions:
+      id-token: write
+
+    # Optional: Specify the environment configured for PyPI trusted publishing
+    # environment:
+    #   name: pypi
+    #   url: https://pypi.org/p/oneforall # Link to the package on PyPI
+
+    steps:
+      - name: Download distributions
+        # Download the packages built in the previous job
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # This action uses OIDC automatically if permissions are set
+        # It will publish packages found in the dist/ directory
